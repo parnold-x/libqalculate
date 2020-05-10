@@ -37,6 +37,8 @@ endif
 cpp = meson.get_compiler('cpp')
 
 mpfr_dep = cpp.find_library('mpfr')
+gmp_dep = cpp.find_library('gmp')
+#mpfr_dep = dependency('mpfr')
 xml2_dep = dependency('libxml-2.0', version: '>=2.3.8')
 thread_dep = dependency('threads')
 

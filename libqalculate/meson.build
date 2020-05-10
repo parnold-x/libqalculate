@@ -68,6 +68,7 @@ libqalculate_private_headers = files(
 
 libqalculate_deps = [
     mpfr_dep,
+    gmp_dep,
     xml2_dep,
     gio_dep,
     libcurl_dep,
