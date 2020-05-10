@@ -95,7 +95,24 @@ libqalculate_lib = library(
   soversion : '3'
 )
 
+libqalculate_lib_static = static_library( 
+  'qalculate',
+  libqalculate_sources,
+  libqalculate_headers,
+  libqalculate_private_headers,
+  definition_resource,
+  config_file,
+  support_file,
+  dependencies: libqalculate_deps,
+  include_directories: root_dir
+)
+
 declare_dependency (
   link_with: 'libqalculate_lib',
+  sources: definition_resource
+)
+
+declare_dependency (
+  link_with: 'libqalculate_lib_static',
   sources: definition_resource
 )
