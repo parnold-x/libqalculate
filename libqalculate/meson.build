@@ -107,12 +107,16 @@ libqalculate_lib_static = static_library(
   include_directories: root_dir
 )
 
-declare_dependency (
+libqalculate_dep = declare_dependency (
   link_with: 'libqalculate_lib',
+  dependencies: libqalculate_deps,
+  include_directories: root_dir,
   sources: definition_resource
 )
 
-declare_dependency (
+libqalculate_dep_static = declare_dependency (
   link_with: 'libqalculate_lib_static',
+  dependencies: libqalculate_deps,
+  include_directories: root_dir,
   sources: definition_resource
 )
