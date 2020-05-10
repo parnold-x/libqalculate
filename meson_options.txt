@@ -1,0 +1,3 @@
+option('compile_definitions', type: 'feature', value: 'auto', description: 'Compile definitions using gio')
+option('libcurl', type: 'feature', value: 'auto', description: 'Support for built-in retrieval of exchange rates]')
+option('icu', type: 'feature', value: 'auto', description: 'Support for case-insensitive unicode strings')
