@@ -5,7 +5,6 @@
 #include <thread>
 #include <algorithm>
 
-using namespace std;
 std::shared_ptr<Calculator> calc;
 MathStructure *mstruct;
 
@@ -14,8 +13,8 @@ extern "C" {
         // set locale of the system
         setlocale (LC_ALL, "");
         calc = std::shared_ptr<Calculator> (new Calculator() );
-        bool lgd = calc->loadGlobalDefinitions();
-        bool lld = calc->loadLocalDefinitions();
+        calc->loadGlobalDefinitions();
+        calc->loadLocalDefinitions();
         load_currencies ();
         calc->useIntervalArithmetic(false);
     }
@@ -37,7 +36,7 @@ extern "C" {
         if (calc->functions[index]->isActive() ) {
             const ExpressionName *ename_r;
             ename_r = &calc->functions[index]->preferredInputName (false, true, false, false);
-            string str = ename_r->name;
+            std::string str = ename_r->name;
             return convert_string (str);
         } else {
             return convert_string ("");
@@ -46,7 +45,7 @@ extern "C" {
 
     char* get_function_description (int index) {
         if (calc->functions[index]->isActive() ) {
-            string str = calc->functions[index]->description ();
+            std::string str = calc->functions[index]->description ();
             return convert_string (str);
         } else {
             return convert_string ("");
@@ -56,7 +55,7 @@ extern "C" {
 
     char* get_function_category (int index) {
         if (calc->functions[index]->isActive() ) {
-            string str = calc->functions[index]->category ();
+            std::string str = calc->functions[index]->category ();
             return convert_string (str);
         } else {
             return convert_string ("");
@@ -66,7 +65,7 @@ extern "C" {
 
     char* get_function_title (int index) {
         if (calc->functions[index]->isActive() ) {
-            string str = calc->functions[index]->title ();
+            std::string str = calc->functions[index]->title ();
             return convert_string (str);
         } else {
             return convert_string ("");
@@ -76,7 +75,7 @@ extern "C" {
 
     char* get_function_arguments (int index) {
         if (calc->functions[index]->isActive() ) {
-            string str = "";
+            std::string str = "";
             Argument *arg;
             int args = calc->functions[index]->maxargs();
             if (args < 0) {
@@ -97,7 +96,7 @@ extern "C" {
 
     char* get_function_arguments_list (int index) {
         if (calc->functions[index]->isActive() ) {
-            string str = "";
+            std::string str = "";
             Argument *arg;
             int args = calc->functions[index]->maxargs();
             if (args < 0) {
@@ -107,7 +106,7 @@ extern "C" {
                 arg = calc->functions[index]->getArgumentDefinition (i);
                 if (arg) {
                     arg = arg->copy();
-                    string str_arg = arg->printlong();
+                    std::string str_arg = arg->printlong();
                     str += arg->name();
                     str += ": ";
                     str += str_arg;
@@ -125,7 +124,7 @@ extern "C" {
         if (calc->variables[index]->isActive() ) {
             const ExpressionName *ename_r;
             ename_r = &calc->variables[index]->preferredInputName (false, true, false, false);
-            string str = ename_r->name;
+            std::string str = ename_r->name;
             return convert_string (str);
         } else {
             return convert_string ("");
@@ -134,7 +133,7 @@ extern "C" {
 
     char* get_variable_category (int index) {
         if (calc->variables[index]->isActive() ) {
-            string str = calc->variables[index]->category ();
+            std::string str = calc->variables[index]->category ();
             return convert_string (str);
         } else {
             return convert_string ("");
@@ -143,7 +142,7 @@ extern "C" {
 
     char* get_variable_title (int index) {
         if (calc->variables[index]->isActive() ) {
-            string str = calc->variables[index]->title ();
+            std::string str = calc->variables[index]->title ();
             return convert_string (str);
         } else {
             return convert_string ("");
@@ -228,6 +227,67 @@ char* convert_string (std::string str) {
     std::copy (str.c_str(), str.c_str() + str.length() + 1, buffer);
     return buffer;
 }
+bool hasEnding(std::string mainStr, std::string toMatch) {
+    auto it = toMatch.begin();
+	return mainStr.size() >= toMatch.size() &&
+			std::all_of(std::next(mainStr.begin(),mainStr.size() - toMatch.size()), mainStr.end(), [&it](const char & c){
+				return ::tolower(c) == ::tolower(*(it++))  ;
+	} );
+}
+
+PrintOptions getPrintOptions(std::string input) {
+    PrintOptions printops;
+    printops.multiplication_sign = MULTIPLICATION_SIGN_ASTERISK;
+    printops.number_fraction_format = FRACTION_DECIMAL;
+    printops.max_decimals = 9;
+    printops.use_max_decimals = true;
+    printops.use_unicode_signs = true;
+    printops.use_unit_prefixes = false;
+
+    //conversions
+    if(hasEnding(input,"to hex")){
+        printops.base = BASE_HEXADECIMAL;
+    }else if(hasEnding(input,"to bin")){
+        printops.base = BASE_BINARY;
+    }else if(hasEnding(input,"to dec")){
+        printops.base = BASE_DECIMAL;
+    }else if(hasEnding(input,"to oct")){
+        printops.base = BASE_OCTAL;
+    }else if(hasEnding(input,"to duo")){
+        printops.base = BASE_DUODECIMAL;
+    }else if(hasEnding(input,"to roman")){
+        printops.base = BASE_ROMAN_NUMERALS;
+    }else if(hasEnding(input,"to bijective")){
+        printops.base = BASE_BIJECTIVE_26;
+    }else if(hasEnding(input,"to roman")){
+        printops.base = BASE_ROMAN_NUMERALS;
+    }else if(hasEnding(input,"to sexa")){
+        printops.base = BASE_SEXAGESIMAL;
+    }else if(hasEnding(input,"to fp32")){
+        printops.base = BASE_FP32;
+    }else if(hasEnding(input,"to fp64")){
+        printops.base = BASE_FP64;
+    }else if(hasEnding(input,"to fp16")){
+        printops.base = BASE_FP16;
+    }else if(hasEnding(input,"to fp80")){
+        printops.base = BASE_FP80;
+    }else if(hasEnding(input,"to fp128")){
+        printops.base = BASE_FP128;
+    }else if(hasEnding(input,"to time")){
+        printops.base = BASE_TIME;
+    }else if(hasEnding(input,"to unicode")){
+        printops.base = BASE_UNICODE;
+    }
+    //TODO do real time zone converstions
+    else if(hasEnding(input,"to utc")||hasEnding(input,"to gmt")){
+		printops.time_zone = TIME_ZONE_UTC;
+    } else if(hasEnding(input,"to cet")){
+		printops.time_zone = TIME_ZONE_CUSTOM;
+		printops.custom_time_zone = 60;
+    }
+    
+    return printops;
+}
 
 std::string intern_calc_wait (std::string input) {
     while (calc->busy() ) {
@@ -239,7 +299,7 @@ std::string intern_calc_wait (std::string input) {
 
 std::string intern_calc_terminate (std::string input) {
     if (calc->busy() ) {
-        cout << "qalc abort" << endl;
+        std::cout << "qalc abort" << std::endl;
         calc->abort();
     }
     return intern_calc (input);
@@ -261,20 +321,16 @@ std::string intern_calc (std::string input) {
     if (!finished)
     { return "calculation takes too long"; }
 
-    PrintOptions printops;
-    printops.multiplication_sign = MULTIPLICATION_SIGN_ASTERISK;
-    printops.number_fraction_format = FRACTION_DECIMAL;
-    printops.max_decimals = 9;
-    printops.use_max_decimals = true;
-    printops.use_unicode_signs = true;
-    printops.use_unit_prefixes = false;
     // if calculation has a error return a empty string. Maybe return a error message?
     int warnings_count;
     bool had_errors = calc->endTemporaryStopMessages (NULL, &warnings_count) > 0;
     if (had_errors) { return ""; }
 
+    
+    PrintOptions printops = getPrintOptions(input);
     mstruct->format (printops);
     std::string result_str = mstruct->print (printops);
 
+    delete mstruct;
     return result_str;//calc->localizeExpression (result_str);
 }
