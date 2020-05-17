@@ -40,7 +40,8 @@ libqalculate_sources = files(
   'MathStructure-eval.cc',
   'MathStructure-convert.cc',
   'MathStructure-decompose.cc',
-  'MathStructure-limit.cc'
+  'MathStructure-limit.cc',
+  'QalculateNasc.cc'
 )
 
 libqalculate_headers = files(
@@ -57,7 +58,8 @@ libqalculate_headers = files(
   'Unit.h',
   'BuiltinFunctions.h',
   'QalculateDateTime.h',
-  'qalculate.h'
+  'qalculate.h',
+  'QalculateNasc.h'
 )
 
 libqalculate_private_headers = files(
@@ -81,19 +83,19 @@ support_file = configure_file(
   output: 'support.h'
 )
 
-libqalculate_lib = library(
-  'qalculate',
-  libqalculate_sources,
-  libqalculate_headers,
-  libqalculate_private_headers,
-  definition_resource,
-  config_file,
-  support_file,
-  dependencies: libqalculate_deps,
-  include_directories: root_dir,
-  version : meson.project_version(),
-  soversion : '3'
-)
+#libqalculate_lib = library(
+#  'qalculate',
+#  libqalculate_sources,
+#  libqalculate_headers,
+#  libqalculate_private_headers,
+#  definition_resource,
+#  config_file,
+#  support_file,
+#  dependencies: libqalculate_deps,
+#  include_directories: root_dir,
+#  version : meson.project_version(),
+#  soversion : '3'
+#)
 
 libqalculate_lib_static = static_library( 
   'qalculate',
@@ -107,12 +109,12 @@ libqalculate_lib_static = static_library(
   include_directories: root_dir
 )
 
-libqalculate_dep = declare_dependency (
-  link_with: 'libqalculate_lib',
-  dependencies: libqalculate_deps,
-  include_directories: root_dir,
-  sources: definition_resource
-)
+#libqalculate_dep = declare_dependency (
+#  link_with: 'libqalculate_lib',
+#  dependencies: libqalculate_deps,
+#  include_directories: root_dir,
+#  sources: definition_resource
+#)
 
 libqalculate_dep_static = declare_dependency (
   link_with: 'libqalculate_lib_static',

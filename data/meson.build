@@ -11,8 +11,8 @@ xml_files = [
 
 xml_data = []
 foreach xml_file : xml_files
-  xml_data = custom_target(
-    'intltool-merge-'xml_file,
+  xml_data += custom_target(
+    'intltool-merge-xml_file-'+xml_file,
     command: [
       'intltool-merge',
       '--xml-style',
