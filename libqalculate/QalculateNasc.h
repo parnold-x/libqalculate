@@ -16,6 +16,7 @@ void abortt();
 
 void delete_calculator();
 
+void add_function(const char* name, const char* expr);
 int get_function_size();
 int get_variable_size();
 char* get_function_name(int index);
