@@ -18,6 +18,12 @@ extern "C" {
         load_currencies ();
         calc->useIntervalArithmetic(false);
     }
+	
+    void add_function (const char* name, const char* expr) {
+	   std::string  name_string (name);
+	    std::string expr_string (expr);
+	    calc->addFunction (new UserFunction ("",name_string,expr_string));
+    }
 
     void load_currencies () {
         calc->loadGlobalCurrencies();
